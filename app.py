@@ -1,15 +1,11 @@
-from flask import Flask, send_from_directory
+from flask import Flask, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
 @app.route("/")
 def home():
-    return send_from_directory("static", "index.html")
+    return render_template("index.html")
 
 @app.route("/login")
 def login():
-    return send_from_directory("static", "login.html")
-
-@app.route("/<path:path>")
-def static_files(path):
-    return send_from_directory("static", path)
+    return render_template("login.html")
