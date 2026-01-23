@@ -1,20 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 
-@app.get("/")
+@app.route("/")
 def home():
-    return render_template("index.html")
+    return send_from_directory("static", "index.html")
 
-@app.get("/login")
+@app.route("/login")
 def login():
-    return render_template("login.html")
+    return send_from_directory("static", "login.html")
 
-# Nice-to-have: Heroku health check / keep-alive pings
-@app.get("/health")
-def health():
-    return {"ok": True}
-
-if __name__ == "__main__":
-    # Local dev only
-    app.run(host="0.0.0.0", port=5000, debug=True)
+@app.route("/<path:path>")
+def static_files(path):
+    return send_from_directory("static", path)
