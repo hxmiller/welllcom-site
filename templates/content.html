@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-lg-10 col-xl-9">
+      <h2 class="fw-semibold mb-3">{{ heading }}</h2>
+      <div class="wc-prose">
+        {% for para in paragraphs %}
+          {% if para.strip() %}
+            <p>{{ para }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

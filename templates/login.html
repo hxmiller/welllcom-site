@@ -1,11 +1,82 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>WellCom - Login</title>
-</head>
-<body>
-  <h1>WellCom - Login</h1>
-  <p>Temporary page to confirm routing works.</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block extra_head %}
+  {% if turnstile_site_key %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="row g-4">
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 fw-semibold mb-2">Login</h2>
+          <p class="text-muted mb-4">Enter your mobile number. We'll text you a one-time verification code.</p>
+
+          <form method="post" action="{{ url_for('send_code') }}" class="mb-3">
+            <div class="mb-3">
+              <label for="phone" class="form-label">Mobile number</label>
+              <input id="phone" name="phone" class="form-control" placeholder="+1 312 555 0123" autocomplete="tel" required>
+              <div class="form-text">Use international format (E.164), e.g. +13125550123.</div>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="yes" id="consentCheck" name="consent" required>
+              <label class="form-check-label" for="consentCheck">
+                I confirm I am the owner (or authorized user) of this number and consent to receive account-related SMS from WellCom.
+              </label>
+            </div>
+
+            <div class="small text-muted mb-3">
+              Msg & data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
+              See <a href="{{ url_for('consent') }}">SMS Consent</a>.
+            </div>
+
+            {% if turnstile_site_key %}
+              <div class="mb-3">
+                <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
+              </div>
+            {% else %}
+              <div class="alert alert-warning small mb-3">
+                Human check is not configured yet. Set <code>TURNSTILE_SITE_KEY</code> and <code>TURNSTILE_SECRET_KEY</code> in Heroku Config Vars.
+              </div>
+            {% endif %}
+
+            <button class="btn btn-primary" type="submit">Send verification code</button>
+          </form>
+
+          <hr class="my-4">
+
+          <form method="post" action="{{ url_for('verify_code') }}">
+            <div class="mb-3">
+              <label for="vphone" class="form-label">Mobile number</label>
+              <input id="vphone" name="phone" class="form-control" placeholder="+13125550123" autocomplete="tel" required>
+            </div>
+            <div class="mb-3">
+              <label for="code" class="form-label">Verification code</label>
+              <input id="code" name="code" class="form-control" inputmode="numeric" autocomplete="one-time-code" required>
+            </div>
+            <button class="btn btn-outline-primary" type="submit">Verify & continue</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <div class="fw-semibold mb-2">A2P-friendly checklist</div>
+          <ul class="small mb-0">
+            <li>Clear consent checkbox before sending SMS</li>
+            <li>STOP/HELP disclosures on the login screen</li>
+            <li>Links to Terms, Privacy, and Consent pages</li>
+            <li>Basic rate limiting & code expiry</li>
+          </ul>
+          <div class="small text-muted mt-3">
+            This page is designed to support relationship-based, informational messaging (not marketing).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
