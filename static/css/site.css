@@ -25,8 +25,8 @@
   width: 100%;
   height: auto;
   border-radius: 12px;
-  filter: saturate(0.0) contrast(1.05) brightness(1.05);
-  opacity: 0.95;
+  filter: none;
+  opacity: 1;
 }
 .wc-nav{
   background: rgba(255,255,255,0.06);
