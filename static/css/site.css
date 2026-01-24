@@ -48,5 +48,10 @@
 .wc-prose p{
   line-height: 1.65;
 }
+/* Keep hero image compact */
+.wc-device-frame { max-width: 320px; margin-left: auto; }
+@media (min-width: 992px){
+  .wc-device-img { max-height: 160px; object-fit: contain; }
+}
 a{ text-decoration: none; }
 a:hover{ text-decoration: underline; }
