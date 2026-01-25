@@ -1,12 +1,10 @@
 PAGES = {
     "home": {
-        "heading": "WellCom: The Wellness Communication Device",
+        "heading": "WellCom: Wellness Communication",
         "paragraphs": [
-            "WellCom is a simple, personal wellness check-in device for people who want to spend about one second each day letting a trusted friend, relative, or caregiver know how they’re doing.",
+            "WellCom is a personal wellness check-in device for people who want to spend about one second each day letting a trusted friend, relative, or caregiver know how they’re doing.",
             "Each morning, press Well or Ill for one second. WellCom sends a short, reassuring text message to your trusted contact after you press a button."
         ],
-        "bullets": [],
-        "footer": [],
     },
 
     "consent": {
