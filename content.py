@@ -80,8 +80,7 @@ PAGES = {
     "contact": {
         "heading": "Contact",
         "paragraphs": [
-            "Need help, or information?",
-            "Email hxmiller@gmail.com. We’re here to help.",
+            "Email hxmiller@gmail.com.",
         ],
         "bullets": [],
         "footer": [],
