@@ -12,7 +12,16 @@
                 <p>{{ para }}</p>
               {% endif %}
             {% endfor %}
+
+            {% if bullets %}
+              <ul class="mt-3">
+                {% for b in bullets %}
+                  <li>{{ b }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
+
         </div>
       </div>
     </div>
