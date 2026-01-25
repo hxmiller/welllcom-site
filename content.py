@@ -19,11 +19,9 @@ PAGES = {
             "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
             "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
             "Message and data rates may apply.",
-            "You may opt out at any time by replying STOP to any WellCom message or by changing your preferences on the WellCom Login/Preferences page.",
-        ],
-        "footer": [
-            "For help, reply HELP.",
-            "For more details, see the Privacy Policy and Terms of Use on this site.",
+            "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
+            "You may request information about Wellcom any time by replying HELP to any WellCom message.",
+            "You may opt out of receiving any additional messages at any time by changing your preferences on the WellCom Login/Preferences page.",
         ],
     },
 
