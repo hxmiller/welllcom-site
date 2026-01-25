@@ -28,8 +28,17 @@ PAGES = {
     "privacy": {
         "heading": "Privacy Policy",
         "paragraphs": [
-            "WellCom respects your privacy and is designed to collect only the information needed to provide the wellness check-in service.",
-            "We do not sell, rent, or share personal information such as phone numbers or names with advertisers, marketers, or unrelated third parties."
+            "WellCom respects your privacy. We collect only the information needed to provide the wellness check-in service.",
+    
+            "What we collect: phone numbers entered during setup, names associated with those phone numbers (if provided), and a device identifier and basic configuration data. We do not collect location data, browsing history, or medical records.",
+    
+            "How we use your information: your phone number and name are used only to send and manage WellCom messages, support your device, and provide customer service. We do not use your data for advertising or marketing.",
+    
+            "Who we share data with: text messages are delivered through an SMS provider (such as Twilio). That provider receives only what is necessary to deliver messages and is not permitted to use your data for any other purpose. We do not sell, rent, or trade your personal information.",
+    
+            "How long we keep data: we keep your phone number and device information only while your account is active. If you opt out or delete your account, your information is removed from our system.",
+    
+            "How to stop or delete your data: reply STOP to any WellCom message, use the Login / Preferences page, or contact us to request deletion."
         ],
         "bullets": [],
         "footer": [],
