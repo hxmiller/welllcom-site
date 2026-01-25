@@ -72,7 +72,7 @@ PAGES = {
             "Make sure your phone has not replied STOP to a WellCom message. If it has, reply START to resume messages, or visit the Login / Preferences page.",
     
             "Need help?",
-            "Reply HELP to any WellCom message or email hxmiller@gmail.com. We’re here to help.",
+            "Reply HELP to any WellCom message or email hxmiller@gmail.com.",
         ],
         "bullets": [],
         "footer": [],
