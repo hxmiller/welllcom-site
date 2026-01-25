@@ -5,34 +5,30 @@
       <h2 class="fw-semibold mb-3">{{ heading }}</h2>
 
       <div class="wc-prose">
-        {% set in_list = false %}
-
         {% for para in paragraphs %}
-          {% set t = para.strip() %}
-          {% if not t %}
-            {# skip empty lines #}
-
-          {% elif t.startswith("•") %}
-            {% if not in_list %}
-              <ul class="ms-3">
-              {% set in_list = true %}
-            {% endif %}
-            <li>{{ t[1:].strip() }}</li>
-
-          {% else %}
-            {% if in_list %}
-              </ul>
-              {% set in_list = false %}
-            {% endif %}
-            <p>{{ t }}</p>
+          {% if para and para.strip() %}
+            <p>{{ para }}</p>
           {% endif %}
         {% endfor %}
 
-        {% if in_list %}
+        {% if bullets %}
+          <ul class="mt-3">
+            {% for b in bullets %}
+              <li>{{ b }}</li>
+            {% endfor %}
           </ul>
         {% endif %}
-      </div>
 
+        {% if footer %}
+          <div class="mt-4 wc-footer-notes">
+            {% for f in footer %}
+              {% if f and f.strip() %}
+                <p class="small text-muted mb-2">{{ f }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 {% endblock %}
