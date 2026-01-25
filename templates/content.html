@@ -3,13 +3,36 @@
   <div class="row">
     <div class="col-12 col-lg-10 col-xl-9">
       <h2 class="fw-semibold mb-3">{{ heading }}</h2>
+
       <div class="wc-prose">
+        {% set in_list = false %}
+
         {% for para in paragraphs %}
-          {% if para.strip() %}
-            <p>{{ para }}</p>
+          {% set t = para.strip() %}
+          {% if not t %}
+            {# skip empty lines #}
+
+          {% elif t.startswith("•") %}
+            {% if not in_list %}
+              <ul class="ms-3">
+              {% set in_list = true %}
+            {% endif %}
+            <li>{{ t[1:].strip() }}</li>
+
+          {% else %}
+            {% if in_list %}
+              </ul>
+              {% set in_list = false %}
+            {% endif %}
+            <p>{{ t }}</p>
           {% endif %}
         {% endfor %}
+
+        {% if in_list %}
+          </ul>
+        {% endif %}
       </div>
+
     </div>
   </div>
 {% endblock %}
