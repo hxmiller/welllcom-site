@@ -7,6 +7,7 @@ PAGES = {
         ],
         "bullets": [
             "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
+            "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
             "Message and data rates may apply.",
             "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
             "You may request information about Wellcom any time by replying HELP to any WellCom message.",
@@ -45,7 +46,7 @@ PAGES = {
     
             "How long we keep data: we keep your phone number and device information only while your account is active. If you opt out or delete your account, your information is removed from our system.",
     
-            "How to stop or delete your data: reply STOP to any WellCom message, use the Login / Preferences page, or contact us to request deletion."
+            "How to stop or delete your data: reply STOP to any WellCom message, use the Login / Preferences page."
         ],
         "bullets": [],
         "footer": [],
@@ -86,17 +87,40 @@ PAGES = {
     
             "If you stop receiving messages",
             "Make sure your phone has not replied STOP to a WellCom message. If it has, reply START to resume messages, or visit the Login / Preferences page.",
-    
+
+            "Restart the device (if the red light is on constantly or the device stops working)",
+            "First press the green buton for 1/2 second, then press the red button for 1/2 second.",
+            "If the problem is not resolved - Press the button on tne backside, for 2 seconds to restart the device.",
+
+            "Change recipient phone number",
+            "Press the button on tne backside, for 5 to 9 seconds.",
+            "On your phone, open Wi-Fi settings and connect to the WellCom setup network. Your phone will open the setup page automatically. If it doesn’t, go to http://192.168.4.1.",
+            "Follow the on-screen instructions to enter your phone number and your trusted contact.  All phone numbers must have previously opted in on the login web page.",
+
+            "Update to the latest version of the software",
+            "Press the button on tne backside, for over 10 seconds.",
+            "Wait a minute or two.",
+            "On your phone, open Wi-Fi settings and connect to the WellCom setup network. Your phone will open the setup page automatically. If it doesn’t, go to http://192.168.4.1.",
+            "Follow the on-screen instructions to enter your phone number and your trusted contact.  All phone numbers must have previously opted in on the login web page.",
+            
             "Need help?",
             "Reply HELP to any WellCom message or email hxmiller@gmail.com.",
         ],
-        "bullets": [],
+         "bullets": [
+            "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
+            "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
+            "Message and data rates may apply.",
+            "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
+            "You may request information about Wellcom any time by replying HELP to any WellCom message.",
+            "You may opt out of receiving any additional messages at any time by changing your preferences on the WellCom Login/Preferences page.",
+        ],
         "footer": [],
     },
     "contact": {
         "heading": "Contact",
         "paragraphs": [
             "Email hxmiller@gmail.com.",
+            "We typically respond within 1-2 business days.",
         ],
         "bullets": [],
         "footer": [],
