@@ -188,7 +188,7 @@ def make_app() -> Flask:
  'home': {'heading': 'WellCom: The Wellness Communication Device',
           'paragraphs': ['WellCom is a simple, personal wellness check-in device for people who want to spend about '
                          'one second each day letting a trusted friend, relative, or caregiver know how they’re doing. '
-                         'Each morning, press Well or Ill for one second. WellCom sends a short']},
+                         'Each morning, press Well or Ill for one second. WellCom sends a short, reassuring text message to your trusted contact after you press a button.']},
  'privacy': {'heading': 'Privacy Policy',
              'paragraphs': ['WellCom respects your privacy. Information we collect Phone numbers entered during device '
                             'setup',
