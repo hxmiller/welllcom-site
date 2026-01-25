@@ -30,11 +30,12 @@
           </div>
         </div>
       </div>
+
       <nav class="wc-nav">
         <div class="container">
-          <ul class="nav nav-pills py-2 flex-wrap">
+          <ul class="nav nav-pills py-2 flex-wrap gap-1">
             <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='home' else '' }}" href="{{ url_for('home') }}">Home</a></li>
-            <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='login' else '' }}" href="{{ url_for('login') }}">Login</a></li>
+            <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='login' else '' }}" href="{{ url_for('login') }}">Login/Preferences</a></li>
             <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='consent' else '' }}" href="{{ url_for('consent') }}">Consent</a></li>
             <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='privacy' else '' }}" href="{{ url_for('privacy') }}">Privacy</a></li>
             <li class="nav-item"><a class="nav-link {{ 'active' if active_page=='terms' else '' }}" href="{{ url_for('terms') }}">Terms</a></li>
@@ -60,7 +61,9 @@
     <footer class="border-top py-4">
       <div class="container small text-muted d-flex flex-column flex-md-row gap-2 justify-content-between">
         <div>© {{ current_year }} WellCom</div>
-       
+        <div class="text-md-end">
+          Not an emergency service. For emergencies, call 911.
+        </div>
       </div>
     </footer>
 
