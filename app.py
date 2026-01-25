@@ -6,6 +6,7 @@ import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from content import PAGES
 
 # Optional dependencies:
 #   pip install twilio requests redis gunicorn
@@ -266,16 +267,17 @@ def make_app() -> Flask:
         )
 
     def _content(page_key: str, active: str):
-        p = PAGES[page_key]
-        return render_template(
-            "content.html",
-            title=f"WellCom – {p['heading']}",
-            active_page=active,
-            heading=p["heading"],
-            paragraphs=p.get("paragraphs", []),
-            bullets=p.get("bullets", []),
-            footer=p.get("footer", []),
-        )
+    p = PAGES[page_key]
+    return render_template(
+        "content.html",
+        title=f"WellCom – {p['heading']}",
+        active_page=active,
+        heading=p["heading"],
+        paragraphs=p.get("paragraphs", []),
+        bullets=p.get("bullets", []),
+        footer=p.get("footer", []),
+    )
+
 
     @app.get("/privacy")
     def privacy():
