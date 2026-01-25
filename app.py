@@ -186,12 +186,15 @@ def make_app() -> Flask:
 
     @app.get("/")
     def home():
+        p = PAGES["home"]
         return render_template(
             "home.html",
             title="WellCom",
             active_page="home",
-            heading=PAGES["home"]["heading"],
-            paragraphs=PAGES["home"]["paragraphs"],
+            heading=p.get("heading", ""),
+            paragraphs=p.get("paragraphs", []),
+            bullets=p.get("bullets", []),
+            footer=p.get("footer", []),
         )
 
     def _content(page_key: str, active: str):
