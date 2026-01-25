@@ -173,6 +173,11 @@ def make_app() -> Flask:
     rl = RateLimiter()
 
     # --- routes ---
+    @app.before_request
+    def force_https():
+    if request.headers.get("X-Forwarded-Proto") == "http":
+    return redirect(request.url.replace("http://", "https://"), code=301)
+    
     @app.context_processor
     def inject_globals():
         return {
