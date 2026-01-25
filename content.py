@@ -5,6 +5,13 @@ PAGES = {
             "WellCom is a personal wellness check-in device for people who want to spend about one second each day letting a trusted friend, relative, or caregiver know how they’re doing.",
             "Each morning, press Well or Ill for one second. WellCom sends a short, reassuring text message to your trusted contact after you press a button."
         ],
+        "bullets": [
+            "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
+            "Message and data rates may apply.",
+            "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
+            "You may request information about Wellcom any time by replying HELP to any WellCom message.",
+            "You may opt out of receiving any additional messages at any time by changing your preferences on the WellCom Login/Preferences page.",
+        ],
     },
 
     "consent": {
