@@ -184,6 +184,8 @@ def make_app() -> Flask:
     "• The phone number you enter for your account has opted in to receive WellCom messages.",
     "• Each recipient phone number you enter has also opted in (through the Login/Preferences page or during setup) and has given permission to receive WellCom messages.",
     "• Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
+    "• WellCom messages are only sent between people connected through the WellCom device and account system. The service does not send promotional, marketing, or broadcast messages.",
+
     "• Message and data rates may apply.",
 
     "Opt-out / Help:",
