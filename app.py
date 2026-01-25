@@ -170,11 +170,21 @@ def make_app() -> Flask:
     rl = RateLimiter()
 
     # --- content (imported from your Google Sites pages) ---
-    PAGES = {'consent': {'heading': 'SMS Consent and Recipient Permission',
-             'paragraphs': ['WellCom sends text messages related to daily wellness check-ins and reminders. During '
-                            'device setup, you will enter phone numbers used for messaging and confirm consent.',
-                            'By saving phone numbers during setup and using the WellCom device, you confirm that:',
-                            'You']},
+    PAGES = {'consent': {
+    'heading': 'SMS Consent and Recipient Permission',
+    'paragraphs': [
+        "WellCom sends SMS messages related to daily wellness check-ins and device reminders. During device setup, you enter phone numbers used for messaging and confirm consent.",
+        "By saving phone numbers during setup and using the WellCom device, you confirm that:",
+        "• You consent to receive WellCom text messages at the phone number you provide for your account.",
+        "• You have obtained permission from each recipient to receive WellCom messages at the phone number you enter for them.",
+        "• Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
+        "• Msg & data rates may apply.",
+        "• To opt out at any time, reply STOP to any message. For help, reply HELP.",
+        "• You can also manage phone numbers and messaging preferences through the WellCom login/preferences page."
+        "For more details, see the Privacy Policy and Terms of Use on this site.",
+        "WellCom is not an emergency service. For emergencies, call 911.",
+    ]
+},
  'contact': {'heading': 'Contact',
              'paragraphs': ['Questions, support requests, or concerns? Email: hxmiller@gmail.com If you received a '
                             'WellCom message and want to stop receiving texts, reply STOP to the message. If you want '
