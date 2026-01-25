@@ -1,57 +1,81 @@
 :root{
-  --wc-blue-900:#0b2447;
-  --wc-blue-700:#1f4aa8;
-  --wc-blue-600:#2c65d8;
-  --wc-surface:#ffffff;
-  --wc-muted:#6c757d;
+  --wc-hero1:#0b2a4a;
+  --wc-hero2:#0d3b66;
+  --wc-accent:#4da3ff;
+  --wc-ink:#0f172a;
+  --wc-muted:#64748b;
+  --wc-card:#ffffff;
+  --wc-border:rgba(15, 23, 42, .12);
 }
+
+body{
+  color: var(--wc-ink);
+  background: #f6f8fb;
+}
+
 .wc-hero{
-  background: linear-gradient(120deg, var(--wc-blue-900), var(--wc-blue-700));
+  background: linear-gradient(120deg, var(--wc-hero1), var(--wc-hero2));
 }
+
 .wc-badge{
-  background: rgba(255,255,255,0.16);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.25);
+  color: white;
+  font-weight: 600;
 }
-.text-white-75{ color: rgba(255,255,255,0.80); }
+
+.text-white-75{ color: rgba(255,255,255,.82) !important; }
+
 .wc-device-frame{
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 18px;
-  padding: 12px;
-  overflow: hidden;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 16px;
+  padding: 10px;
 }
+
 .wc-device-img{
   width: 100%;
   height: auto;
+  display: block;
   border-radius: 12px;
-  filter: none;
-  opacity: 1;
 }
+
 .wc-nav{
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255,255,255,.14);
 }
+
 .wc-nav .nav-link{
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,.85);
   border-radius: 999px;
-  padding: .45rem .85rem;
+  padding: .45rem .9rem;
 }
+
 .wc-nav .nav-link:hover{
-  color: #fff;
-  background: rgba(255,255,255,0.12);
+  color: white;
+  background: rgba(255,255,255,.12);
 }
+
 .wc-nav .nav-link.active{
-  color: var(--wc-blue-900);
-  background: #fff;
+  color: var(--wc-ink);
+  background: white;
 }
+
 .wc-prose p{
-  line-height: 1.65;
+  line-height: 1.6;
+  margin-bottom: .9rem;
 }
-/* Keep hero image compact */
-.wc-device-frame { max-width: 320px; margin-left: auto; }
-@media (min-width: 992px){
-  .wc-device-img { max-height: 160px; object-fit: contain; }
+
+.wc-prose ul{
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
 }
-a{ text-decoration: none; }
-a:hover{ text-decoration: underline; }
+
+.wc-prose li{
+  margin-bottom: .35rem;
+}
+
+.wc-footer-notes{
+  border-top: 1px solid var(--wc-border);
+  padding-top: 1rem;
+}
