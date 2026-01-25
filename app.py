@@ -201,9 +201,6 @@ def make_app() -> Flask:
             footer=p.get("footer", []),
         )
  
-
-
-
     @app.get("/privacy")
     def privacy():
         return _content("privacy", "privacy")
