@@ -173,17 +173,27 @@ def make_app() -> Flask:
     PAGES = {'consent': {
     'heading': 'SMS Consent and Recipient Permission',
     'paragraphs': [
-        "WellCom sends SMS messages related to daily wellness check-ins and device reminders. During device setup, you enter phone numbers used for messaging and confirm consent.",
-        "By saving phone numbers during setup and using the WellCom device, you confirm that:",
-        "• You consent to receive WellCom text messages at the phone number you provide for your account.",
-        "• You have obtained permission from each recipient to receive WellCom messages at the phone number you enter for them.",
-        "• Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
-        "• Msg & data rates may apply.",
-        "• To opt out at any time, reply STOP to any message. For help, reply HELP.",
-        "• You can also manage phone numbers and messaging preferences through the WellCom login/preferences page."
-        "For more details, see the Privacy Policy and Terms of Use on this site.",
-        "WellCom is not an emergency service. For emergencies, call 911.",
-    ]
+    "WellCom sends SMS messages related to daily wellness check-ins and device reminders.",
+
+    "Only people who have created an account on the WellCom Login/Preferences page and explicitly opted in are eligible to receive WellCom text messages.",
+
+    "During device setup and/or on the Login/Preferences page, you enter phone numbers used for messaging and confirm consent.",
+
+    "By saving phone numbers and enabling messaging, you confirm that:",
+
+    "• The phone number you enter for your account has opted in to receive WellCom messages.",
+    "• Each recipient phone number you enter has also opted in (through the Login/Preferences page or during setup) and has given permission to receive WellCom messages.",
+    "• Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
+    "• Message and data rates may apply.",
+
+    "Opt-out / Help:",
+    "• You may opt out at any time by replying STOP to any WellCom message, or by changing your preferences on the WellCom Login/Preferences page.",
+    "• For help, reply HELP.",
+
+    "For more details, see the Privacy Policy and Terms of Use on this site.",
+    "WellCom is not an emergency service. For emergencies, call 911.",
+]
+
 },
  'contact': {'heading': 'Contact',
              'paragraphs': ['Questions, support requests, or concerns? Email: hxmiller@gmail.com If you received a '
