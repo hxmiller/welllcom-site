@@ -25,7 +25,7 @@ PAGES = {
             "For help, reply HELP.",
             "For more details, see the Privacy Policy and Terms of Use on this site.",
         ],
-    }
+    },
 
     "privacy": {
         "heading": "Privacy Policy",
