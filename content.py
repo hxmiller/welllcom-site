@@ -6,7 +6,7 @@ PAGES = {
             "Each morning, press Well or Ill for one second. WellCom sends a short, reassuring text message to your trusted contact after you press a button."
         ],
         "bullets": [
-            "To receive a message from WellCom yo must first opt in on the Login page.",
+            "To receive a message from WellCom you must first opt in on the Login/Preferences page.",
             "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
             "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
             "Message and data rates may apply.",
