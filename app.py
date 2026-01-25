@@ -310,7 +310,7 @@ def make_app() -> Flask:
         codes.put(phone, code_hash, ttl_seconds=10 * 60)
 
         # A2P-friendly message: short, informational, includes HELP/STOP and rates disclosure.
-        body = f"WellCom verification code: {code}. Expires in 10 min. Reply STOP to opt out, HELP for help. Msg&data rates may apply."
+        body = f"WellCom verification code: {code}. Expires in 10 min. Reply STOP to opt out, HELP for help.  Message data rates may apply."
         sent = send_sms(phone, body)
 
         if sent:
