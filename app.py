@@ -27,11 +27,13 @@ except Exception:  # pragma: no cover
 
 E164_RE = re.compile(r"^\+[1-9]\d{7,14}$")
 
+
 def normalize_phone(raw: str) -> str:
     raw = (raw or "").strip().replace(" ", "").replace("(", "").replace(")", "").replace("-", "")
     if raw.startswith("00"):
         raw = "+" + raw[2:]
     return raw
+
 
 def is_valid_phone(e164: str) -> bool:
     return bool(E164_RE.match(e164 or ""))
@@ -71,7 +73,7 @@ class CodeStore:
             d = self._r.hgetall(self._key(phone))
             if not d:
                 return None
-            return CodeRecord(code_hash=d.get("code_hash",""), expires_at=int(d.get("expires_at","0") or 0))
+            return CodeRecord(code_hash=d.get("code_hash", ""), expires_at=int(d.get("expires_at", "0") or 0))
         return self._mem.get(self._key(phone))
 
     def delete(self, phone: str):
@@ -170,72 +172,81 @@ def make_app() -> Flask:
     rl = RateLimiter()
 
     # --- content (imported from your Google Sites pages) ---
-    PAGES = {'consent': {
-    'heading': 'SMS Consent and Recipient Permission',
-    'paragraphs': [
-    "WellCom sends SMS messages related to daily wellness check-ins and device reminders.",
+    PAGES = {
+        "consent": {
+            "heading": "SMS Consent and Recipient Permission",
+            "paragraphs": [
+                "WellCom sends SMS messages related to daily wellness check-ins and device reminders.",
+                "Only people who have created an account on the WellCom Login/Preferences page and explicitly opted in are eligible to receive WellCom text messages.",
+                "During device setup and/or on the Login/Preferences page, you enter phone numbers used for messaging and confirm consent.",
+                "By saving phone numbers and enabling messaging, you confirm that:",
+            ],
+            "bullets": [
+                "The phone number you enter for your account has opted in to receive WellCom messages.",
+                "Each recipient phone number you enter has also opted in (through the Login/Preferences page or during setup) and has given permission to receive WellCom messages.",
+                "Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
+                "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
+                "Message and data rates may apply.",
+            ],
+            "footer": [
+                "You may opt out at any time by replying STOP to any WellCom message, or by changing your preferences on the WellCom Login/Preferences page.",
+                "For help, reply HELP.",
+                "For more details, see the Privacy Policy and Terms of Use on this site.",
+                "WellCom is not an emergency service. For emergencies, call 911.",
+            ],
+        },
 
-    "Only people who have created an account on the WellCom Login/Preferences page and explicitly opted in are eligible to receive WellCom text messages.",
+        "contact": {
+            "heading": "Contact",
+            "paragraphs": [
+                "Questions, support requests, or concerns? Email: hxmiller@gmail.com",
+                "If you received a WellCom message and want to stop receiving texts, reply STOP to the message.",
+                "If you want help, reply HELP.",
+            ],
+        },
 
-    "During device setup and/or on the Login/Preferences page, you enter phone numbers used for messaging and confirm consent.",
+        "help": {
+            "heading": "Help: Installation, Use, and Troubleshooting",
+            "paragraphs": [
+                "Installation (First-Time Setup) Plug in the WellCom device.",
+                "On your phone, open Wi-Fi settings and connect to the WellCom setup network.",
+                "Your phone will open the WellCom setup page (or go to http://192.168.4.1).",
+                "Enter:",
+                "Your 2.4 GHz Wi-Fi network name",
+            ],
+        },
 
-    "By saving phone numbers and enabling messaging, you confirm that:",
+        "home": {
+            "heading": "WellCom: The Wellness Communication Device",
+            "paragraphs": [
+                "WellCom is a simple, personal wellness check-in device for people who want to spend about one second each day letting a trusted friend, relative, or caregiver know how they’re doing.",
+                "Each morning, press Well or Ill for one second.",
+                "WellCom sends a short, reassuring text message to your trusted contact after you press a button.",
+            ],
+        },
 
-    "• The phone number you enter for your account has opted in to receive WellCom messages.",
-    "• Each recipient phone number you enter has also opted in (through the Login/Preferences page or during setup) and has given permission to receive WellCom messages.",
-    "• Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
-    "• WellCom messages are only sent between people connected through the WellCom device and account system. The service does not send promotional, marketing, or broadcast messages.",
+        "privacy": {
+            "heading": "Privacy Policy",
+            "paragraphs": [
+                "WellCom respects your privacy and is designed to collect only the information needed to provide the wellness check-in service.",
+                "Information we collect includes: phone numbers entered during device setup, names associated with those phone numbers (if provided), and a device identifier and basic configuration data needed for operation and troubleshooting.",
+                "How we use your information: Phone numbers and names are used only to send and manage WellCom text messages and to support your device. Device information is used only to keep the service working properly.",
+                "We do not sell, rent, share, or trade your personal information — including phone numbers, names, or message data — with advertisers, marketers, or any third parties. Your information is used only to operate the WellCom service.",
+                "Text messages are delivered through an SMS provider (such as Twilio) solely for the purpose of delivering WellCom messages. That provider is contractually prohibited from using your data for any other purpose.",
+                "You may request deletion of your phone number or stop receiving messages at any time by replying STOP to a WellCom message or by changing your preferences on the WellCom login page.",
+                "WellCom is not an emergency service. For emergencies, call 911.",
+            ],
+        },
 
-    "• Message and data rates may apply.",
-
-    "Opt-out / Help:",
-    "• You may opt out at any time by replying STOP to any WellCom message, or by changing your preferences on the WellCom Login/Preferences page.",
-    "• For help, reply HELP.",
-
-    "For more details, see the Privacy Policy and Terms of Use on this site.",
-    "WellCom is not an emergency service. For emergencies, call 911.",
-]
-
-},
- 'contact': {'heading': 'Contact',
-             'paragraphs': ['Questions, support requests, or concerns? Email: hxmiller@gmail.com If you received a '
-                            'WellCom message and want to stop receiving texts, reply STOP to the message. If you want '
-                            'help, reply HELP.']},
- 'help': {'heading': 'Help: Installation, Use, and Troubleshooting',
-          'paragraphs': ['Installation (First-Time Setup) Plug in the WellCom device.',
-                         'On your phone, open Wi-Fi settings and connect to the WellCom setup network.',
-                         'Your phone will open the WellCom setup page (or go to http://192.168.4.1).',
-                         'Enter:',
-                         'Your 2.4 GHz Wi-Fi network name']},
- 'home': {'heading': 'WellCom: The Wellness Communication Device',
-          'paragraphs': ['WellCom is a simple, personal wellness check-in device for people who want to spend about '
-                         'one second each day letting a trusted friend, relative, or caregiver know how they’re doing. '
-                         'Each morning, press Well or Ill for one second. WellCom sends a short, reassuring text message to your trusted contact after you press a button.']},
-'privacy': {
-    'heading': 'Privacy Policy',
-    'paragraphs': [
-        "WellCom respects your privacy and is designed to collect only the information needed to provide the wellness check-in service.",
-
-        "Information we collect includes: phone numbers entered during device setup, names associated with those phone numbers (if provided), and a device identifier and basic configuration data needed for operation and troubleshooting.",
-
-        "How we use your information: Phone numbers and names are used only to send and manage WellCom text messages and to support your device. Device information is used only to keep the service working properly.",
-
-        "We do not sell, rent, share, or trade your personal information — including phone numbers, names, or message data — with advertisers, marketers, or any third parties. Your information is used only to operate the WellCom service.",
-
-        "Text messages are delivered through an SMS provider (such as Twilio) solely for the purpose of delivering WellCom messages. That provider is contractually prohibited from using your data for any other purpose.",
-
-        "You may request deletion of your phone number or stop receiving messages at any time by replying STOP to a WellCom message or by changing your preferences on the WellCom login page.",
-
-        "WellCom is not an emergency service. For emergencies, call 911."
-    ]
-}
-,
- 'terms': {'heading': 'Terms of Use',
-           'paragraphs': ['WellCom is a personal wellness communication device. The service is provided “as is” and is '
-                          'not intended for emergency use.',
-                          'By using WellCom, you agree that: You are responsible for obtaining consent from message '
-                          'recipients before using their phone numbers.',
-                          'You will not use WellCom']}}
+        "terms": {
+            "heading": "Terms of Use",
+            "paragraphs": [
+                "WellCom is a personal wellness communication device. The service is provided “as is” and is not intended for emergency use.",
+                "By using WellCom, you agree that: You are responsible for obtaining consent from message recipients before using their phone numbers.",
+                "You will not use WellCom for unlawful, abusive, or spam purposes.",
+            ],
+        },
+    }
 
     # --- routes ---
     @app.context_processor
@@ -261,7 +272,9 @@ def make_app() -> Flask:
             title=f"WellCom – {p['heading']}",
             active_page=active,
             heading=p["heading"],
-            paragraphs=p["paragraphs"],
+            paragraphs=p.get("paragraphs", []),
+            bullets=p.get("bullets", []),
+            footer=p.get("footer", []),
         )
 
     @app.get("/privacy")
@@ -296,14 +309,14 @@ def make_app() -> Flask:
     @app.post("/login/send-code")
     def send_code_route():
         phone = normalize_phone(request.form.get("phone", ""))
-        consent = request.form.get("consent") == "yes"
+        consent_ok = request.form.get("consent") == "yes"
 
         if not is_valid_phone(phone):
-            flash("danger", "Please enter a valid mobile number in international format (e.g. +13125550123).")
+            flash("Please enter a valid mobile number in international format (e.g. +13125550123).", "danger")
             return redirect(url_for("login"))
 
-        if not consent:
-            flash("danger", "Consent is required to send a verification code.")
+        if not consent_ok:
+            flash("Consent is required to send a verification code.", "danger")
             return redirect(url_for("login"))
 
         # Human check (Turnstile)
@@ -313,18 +326,17 @@ def make_app() -> Flask:
             token = request.form.get("cf-turnstile-response", "")
             ok = verify_turnstile(token, request.remote_addr)
             if not ok:
-                flash("danger", "Human verification failed. Please try again.")
+                flash("Human verification failed. Please try again.", "danger")
                 return redirect(url_for("login"))
         else:
-            # Not configured: allow in dev, but warn.
-            flash("warning", "Human check not configured yet; enable Turnstile in Config Vars for production.")
+            flash("Human check not configured yet; enable Turnstile in Config Vars for production.", "warning")
 
         # rate limits (per phone and per IP)
         if not rl.allow(f"ip:{request.remote_addr}", limit=5, window_seconds=15 * 60):
-            flash("danger", "Too many attempts from this network. Please try again later.")
+            flash("Too many attempts from this network. Please try again later.", "danger")
             return redirect(url_for("login"))
         if not rl.allow(f"phone:{phone}", limit=3, window_seconds=15 * 60):
-            flash("danger", "Too many codes sent to this number. Please try again later.")
+            flash("Too many codes sent to this number. Please try again later.", "danger")
             return redirect(url_for("login"))
 
         # generate code
@@ -335,13 +347,16 @@ def make_app() -> Flask:
         codes.put(phone, code_hash, ttl_seconds=10 * 60)
 
         # A2P-friendly message: short, informational, includes HELP/STOP and rates disclosure.
-        body = f"WellCom verification code: {code}. Expires in 10 min. Reply STOP to opt out, HELP for help.  Message and data rates may apply."
+        body = (
+            f"WellCom verification code: {code}. Expires in 10 min. "
+            "Reply STOP to opt out, HELP for help. Message and data rates may apply."
+        )
         sent = send_sms(phone, body)
 
         if sent:
-            flash("success", "Verification code sent. Please enter it below.")
+            flash("Verification code sent. Please enter it below.", "success")
         else:
-            flash("warning", "SMS not sent (Twilio not configured yet). For testing, check server logs for the code.")
+            flash("SMS not sent (Twilio not configured yet). For testing, check server logs for the code.", "warning")
             app.logger.warning("DEV code for %s is %s", phone, code)
 
         return redirect(url_for("login"))
@@ -352,28 +367,28 @@ def make_app() -> Flask:
         code = (request.form.get("code", "") or "").strip()
 
         if not is_valid_phone(phone) or not re.fullmatch(r"\d{6}", code):
-            flash("danger", "Invalid phone number or code.")
+            flash("Invalid phone number or code.", "danger")
             return redirect(url_for("login"))
 
         rec = codes.get(phone)
         if not rec:
-            flash("danger", "No active code found (it may have expired). Please request a new code.")
+            flash("No active code found (it may have expired). Please request a new code.", "danger")
             return redirect(url_for("login"))
 
         if int(time.time()) > rec.expires_at:
             codes.delete(phone)
-            flash("danger", "That code expired. Please request a new code.")
+            flash("That code expired. Please request a new code.", "danger")
             return redirect(url_for("login"))
 
         secret = os.getenv("CODE_HASH_SECRET", "dev-secret-change-me")
         expected = hash_code(secret, phone, code)
         if not hmac.compare_digest(expected, rec.code_hash):
-            flash("danger", "Incorrect code.")
+            flash("Incorrect code.", "danger")
             return redirect(url_for("login"))
 
         codes.delete(phone)
         session["user_phone"] = phone
-        flash("success", "Verified. (Next: preferences page)")
+        flash("Verified. (Next: preferences page)", "success")
         return redirect(url_for("home"))
 
     # Friendly endpoints for templates
