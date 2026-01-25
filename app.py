@@ -172,83 +172,6 @@ def make_app() -> Flask:
     codes = CodeStore()
     rl = RateLimiter()
 
-    # --- content (imported from your Google Sites pages) ---
-    PAGES = {
-        "consent": {
-            "heading": "SMS Consent and Recipient Permission",
-            "paragraphs": [
-                "WellCom sends SMS messages related to daily wellness check-ins and device reminders.",
-                "Only people who have created an account on the WellCom Login/Preferences page and explicitly opted in are eligible to receive WellCom text messages.",
-                "During device setup and/or on the Login/Preferences page, you enter phone numbers used for messaging and confirm consent.",
-                "By saving phone numbers and enabling messaging, you confirm that:",
-            ],
-            "bullets": [
-                "The phone number you enter for your account has opted in to receive WellCom messages.",
-                "Each recipient phone number you enter has also opted in (through the Login/Preferences page or during setup) and has given permission to receive WellCom messages.",
-                "Message frequency varies (typically daily check-ins and occasional device/setup notifications).",
-                "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
-                "Message and data rates may apply.",
-            ],
-            "footer": [
-                "You may opt out at any time by replying STOP to any WellCom message, or by changing your preferences on the WellCom Login/Preferences page.",
-                "For help, reply HELP.",
-                "For more details, see the Privacy Policy and Terms of Use on this site.",
-                "WellCom is not an emergency service. For emergencies, call 911.",
-            ],
-        },
-
-        "contact": {
-            "heading": "Contact",
-            "paragraphs": [
-                "Questions, support requests, or concerns? Email: hxmiller@gmail.com",
-                "If you received a WellCom message and want to stop receiving texts, reply STOP to the message.",
-                "If you want help, reply HELP.",
-            ],
-        },
-
-        "help": {
-            "heading": "Help: Installation, Use, and Troubleshooting",
-            "paragraphs": [
-                "Installation (First-Time Setup) Plug in the WellCom device.",
-                "On your phone, open Wi-Fi settings and connect to the WellCom setup network.",
-                "Your phone will open the WellCom setup page (or go to http://192.168.4.1).",
-                "Enter:",
-                "Your 2.4 GHz Wi-Fi network name",
-            ],
-        },
-
-        "home": {
-            "heading": "WellCom: The Wellness Communication Device",
-            "paragraphs": [
-                "WellCom is a simple, personal wellness check-in device for people who want to spend about one second each day letting a trusted friend, relative, or caregiver know how they’re doing.",
-                "Each morning, press Well or Ill for one second.",
-                "WellCom sends a short, reassuring text message to your trusted contact after you press a button.",
-            ],
-        },
-
-        "privacy": {
-            "heading": "Privacy Policy",
-            "paragraphs": [
-                "WellCom respects your privacy and is designed to collect only the information needed to provide the wellness check-in service.",
-                "Information we collect includes: phone numbers entered during device setup, names associated with those phone numbers (if provided), and a device identifier and basic configuration data needed for operation and troubleshooting.",
-                "How we use your information: Phone numbers and names are used only to send and manage WellCom text messages and to support your device. Device information is used only to keep the service working properly.",
-                "We do not sell, rent, share, or trade your personal information — including phone numbers, names, or message data — with advertisers, marketers, or any third parties. Your information is used only to operate the WellCom service.",
-                "Text messages are delivered through an SMS provider (such as Twilio) solely for the purpose of delivering WellCom messages. That provider is contractually prohibited from using your data for any other purpose.",
-                "You may request deletion of your phone number or stop receiving messages at any time by replying STOP to a WellCom message or by changing your preferences on the WellCom login page.",
-                "WellCom is not an emergency service. For emergencies, call 911.",
-            ],
-        },
-
-        "terms": {
-            "heading": "Terms of Use",
-            "paragraphs": [
-                "WellCom is a personal wellness communication device. The service is provided “as is” and is not intended for emergency use.",
-                "By using WellCom, you agree that: You are responsible for obtaining consent from message recipients before using their phone numbers.",
-                "You will not use WellCom for unlawful, abusive, or spam purposes.",
-            ],
-        },
-    }
-
     # --- routes ---
     @app.context_processor
     def inject_globals():
@@ -266,17 +189,19 @@ def make_app() -> Flask:
             paragraphs=PAGES["home"]["paragraphs"],
         )
 
-    def _content(page_key: str, active: str):
-    p = PAGES[page_key]
-    return render_template(
-        "content.html",
-        title=f"WellCom – {p['heading']}",
-        active_page=active,
-        heading=p["heading"],
-        paragraphs=p.get("paragraphs", []),
-        bullets=p.get("bullets", []),
-        footer=p.get("footer", []),
-    )
+   def _content(page_key: str, active: str):
+        p = PAGES[page_key]
+        return render_template(
+            "content.html",
+            title=f"WellCom – {p['heading']}",
+            active_page=active,
+            heading=p["heading"],
+            paragraphs=p.get("paragraphs", []),
+            bullets=p.get("bullets", []),
+            footer=p.get("footer", []),
+        )
+ 
+
 
 
     @app.get("/privacy")
