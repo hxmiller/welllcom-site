@@ -55,6 +55,35 @@ PAGES = {
         ],
         "footer": [],
         },
-    "help": {"heading": "Help: Installation, Use, and Troubleshooting", "paragraphs": [], "bullets": [], "footer": []},
-    "contact": {"heading": "Contact", "paragraphs": [], "bullets": [], "footer": []},
+    "help": {
+        "heading": "Help: Installation, Use, and Troubleshooting",
+        "paragraphs": [
+            "Getting Started",
+            "Plug in your WellCom device. On your phone, open Wi-Fi settings and connect to the WellCom setup network. Your phone will open the setup page automatically. If it doesn’t, go to http://192.168.4.1.",
+            "Follow the on-screen instructions to enter your phone number and your trusted contact.  All phone numbers must have previously opted in on the login web page.",
+    
+            "Daily Use",
+            "Each day, press Well or Ill for one second. WellCom sends a short text message to your trusted contact letting them know how you’re doing. That’s it.",
+    
+            "If a message wasn’t delivered",
+            "Text messages depend on mobile networks. Occasionally, messages may be delayed or not delivered due to carrier or signal issues. If you think something didn’t go through, you can simply press the button again.",
+    
+            "If you stop receiving messages",
+            "Make sure your phone has not replied STOP to a WellCom message. If it has, reply START to resume messages, or visit the Login / Preferences page.",
+    
+            "Need help?",
+            "Reply HELP to any WellCom message or email hxmiller@gmail.com. We’re here to help.",
+        ],
+        "bullets": [],
+        "footer": [],
+    },
+    "contact": {
+        "heading": "Contact",
+        "paragraphs": [
+            "Need help, or information?",
+            "Email hxmiller@gmail.com. We’re here to help.",
+        ],
+        "bullets": [],
+        "footer": [],
+    },
 }
