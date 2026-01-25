@@ -13,9 +13,51 @@ body{
   background: #f6f8fb;
 }
 
+/* ===========================
+   HERO / HEADER (SHRUNK)
+   =========================== */
+
 .wc-hero{
   background: linear-gradient(120deg, var(--wc-hero1), var(--wc-hero2));
 }
+
+/* Reduce vertical padding inside banner */
+.wc-hero .container{
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+/* Tighten spacing of text */
+.wc-hero h1{
+  margin-bottom: .25rem !important;
+}
+
+.wc-hero p{
+  margin-bottom: 0 !important;
+}
+
+/* Make device area smaller so it doesn’t force banner tall */
+.wc-device-frame{
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 16px;
+  padding: 6px;              /* was 10px */
+  max-width: 240px;          /* limit width so it stays compact */
+  margin-left: auto;
+}
+
+.wc-device-img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  max-height: 140px;         /* KEY: limits hero height */
+  object-fit: contain;
+}
+
+/* ===========================
+   BADGE & NAV
+   =========================== */
 
 .wc-badge{
   background: rgba(255,255,255,.16);
@@ -25,20 +67,6 @@ body{
 }
 
 .text-white-75{ color: rgba(255,255,255,.82) !important; }
-
-.wc-device-frame{
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 16px;
-  padding: 10px;
-}
-
-.wc-device-img{
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-}
 
 .wc-nav{
   background: rgba(255,255,255,.08);
@@ -60,6 +88,10 @@ body{
   color: var(--wc-ink);
   background: white;
 }
+
+/* ===========================
+   BODY CONTENT
+   =========================== */
 
 .wc-prose p{
   line-height: 1.6;
