@@ -10,9 +10,9 @@ PAGES = {
             "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
             "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
             "Message and data rates may apply.",
-            "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
+            "You may opt out of receiving any additional messages any time by replying STOP to any WellCom message.",
             "You may request information about Wellcom any time by replying HELP to any WellCom message.",
-            "You may opt out of receiving any additional messages at any time by changing your preferences on the WellCom Login/Preferences page.",
+            "You may opt out of receiving any additional messages any time by changing your preferences on the WellCom Login/Preferences page.",
         ],
     },
 
@@ -28,9 +28,9 @@ PAGES = {
             "Message frequency varies (typically daily check-ins and occasional device and setup notifications).",
             "WellCom messages are informational and relationship-based, sent only between a user and their designated trusted contact(s). WellCom does not send promotional, marketing, or broadcast messages.",
             "Message and data rates may apply.",
-            "You may opt out of receiving any additional messages at any time by replying STOP to any WellCom message.",
+            "You may opt out of receiving any additional messages any time by replying STOP to any WellCom message.",
             "You may request information about Wellcom any time by replying HELP to any WellCom message.",
-            "You may opt out of receiving any additional messages at any time by changing your preferences on the WellCom Login/Preferences page.",
+            "You may opt out of receiving any additional messages any time by changing your preferences on the WellCom Login/Preferences page.",
         ],
     },
 
@@ -45,7 +45,7 @@ PAGES = {
     
             "Who we share data with: text messages are delivered through an SMS provider (such as Twilio). That provider receives only what is necessary to deliver messages and is not permitted to use your data for any other purpose. We do not sell, rent, or trade your personal information.",
     
-            "How long we keep data: we keep your phone number and device information only while your account is active. If you opt out or delete your account, your information is removed from our system.",
+            "How long we keep data: if you delete your account on the Login/Preferences page, your information is removed from our system.",
     
             "How to stop or delete your data: reply STOP to any WellCom message, use the Login / Preferences page."
         ],
