@@ -189,7 +189,7 @@ def make_app() -> Flask:
             paragraphs=PAGES["home"]["paragraphs"],
         )
 
-   def _content(page_key: str, active: str):
+    def _content(page_key: str, active: str):
         p = PAGES[page_key]
         return render_template(
             "content.html",
