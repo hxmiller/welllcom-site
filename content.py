@@ -75,6 +75,8 @@ PAGES = {
     "help": {
         "heading": "Help: Installation, Use, and Troubleshooting",
         "paragraphs": [
+            "<strong><u>TEST: bold + underline</u></strong>"
+            
             "Getting Started",
             "Plug in your WellCom device. On your phone, open Wi-Fi settings and connect to the WellCom setup network. Your phone will open the setup page automatically. If it doesn’t, go to http://192.168.4.1.",
             "Follow the on-screen instructions to enter your phone number and your trusted contact.  All phone numbers must have previously opted in on the login web page.",
