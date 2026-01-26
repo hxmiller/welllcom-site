@@ -39,12 +39,12 @@ def normalize_phone(raw: str) -> str:
 def is_valid_phone(e164: str) -> bool:
     return bool(E164_RE.match(e164 or ""))
 
-
 @dataclass
 class CodeRecord:
     code_hash: str
     expires_at: int
-
+    action: str = ""        # "opt_in" | "opt_out" | "hard_delete"
+    pending_name: str = ""  # optional, but required for first-time opt-in
 
 class CodeStore:
     """
@@ -61,14 +61,23 @@ class CodeStore:
     def _key(self, phone: str) -> str:
         return f"login_code:{phone}"
 
-    def put(self, phone: str, code_hash: str, ttl_seconds: int):
+    def put(self, phone: str, code_hash: str, ttl_seconds: int, action: str, pending_name: str):
         exp = int(time.time()) + ttl_seconds
         if self._r:
-            self._r.hset(self._key(phone), mapping={"code_hash": code_hash, "expires_at": str(exp)})
+            self._r.hset(self._key(phone), mapping={
+                "code_hash": code_hash,
+                "expires_at": str(exp),
+                "action": action,
+                "pending_name": pending_name or "",
+            })
             self._r.expire(self._key(phone), ttl_seconds)
         else:
-            self._mem[self._key(phone)] = CodeRecord(code_hash=code_hash, expires_at=exp)
-
+            self._mem[self._key(phone)] = CodeRecord(
+                code_hash=code_hash,
+                expires_at=exp,
+                action=action,
+                pending_name=pending_name or "",
+            )
     def get(self, phone: str) -> CodeRecord | None:
         if self._r:
             d = self._r.hgetall(self._key(phone))
@@ -77,11 +86,18 @@ class CodeStore:
             return CodeRecord(code_hash=d.get("code_hash", ""), expires_at=int(d.get("expires_at", "0") or 0))
         return self._mem.get(self._key(phone))
 
-    def delete(self, phone: str):
+    def get(self, phone: str) -> CodeRecord | None:
         if self._r:
-            self._r.delete(self._key(phone))
-        else:
-            self._mem.pop(self._key(phone), None)
+            d = self._r.hgetall(self._key(phone))
+            if not d:
+                return None
+            return CodeRecord(
+                code_hash=d.get("code_hash", ""),
+                expires_at=int(d.get("expires_at", "0") or 0),
+                action=d.get("action", "") or "",
+                pending_name=d.get("pending_name", "") or "",
+            )
+        return self._mem.get(self._key(phone))
 
 
 class RateLimiter:
