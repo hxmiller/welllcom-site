@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<style>
+  @media print {
+    .no-print { display: none !important; }
+    .card { box-shadow: none !important; border: 1px solid #ccc; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-9 col-xl-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h2 class="h4 fw-semibold mb-1">Confirmation</h2>
+              <div class="text-muted">WellCom Login / Preferences</div>
+            </div>
+            <button class="btn btn-outline-secondary no-print" onclick="window.print()">Print</button>
+          </div>
+
+          <hr class="my-4">
+
+          {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+          {% else %}
+            <div class="alert alert-success">{{ message }}</div>
+
+            <ul class="mb-4">
+              <li><strong>Phone:</strong> {{ phone }}</li>
+              {% if name %}
+                <li><strong>Name:</strong> {{ name }}</li>
+              {% endif %}
+              <li><strong>Action:</strong> {{ action_label }}</li>
+              <li><strong>Time:</strong> {{ timestamp }}</li>
+            </ul>
+          {% endif %}
+
+          <div class="small text-muted">
+            Msg & data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
+            You may change preferences any time by returning to this page.
+            See <a href="{{ url_for('consent') }}">SMS Consent</a>, <a href="{{ url_for('privacy') }}">Privacy</a>, <a href="{{ url_for('terms') }}">Terms</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
