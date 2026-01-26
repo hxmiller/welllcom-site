@@ -78,13 +78,6 @@ class CodeStore:
                 action=action,
                 pending_name=pending_name or "",
             )
-    def get(self, phone: str) -> CodeRecord | None:
-        if self._r:
-            d = self._r.hgetall(self._key(phone))
-            if not d:
-                return None
-            return CodeRecord(code_hash=d.get("code_hash", ""), expires_at=int(d.get("expires_at", "0") or 0))
-        return self._mem.get(self._key(phone))
 
     def get(self, phone: str) -> CodeRecord | None:
         if self._r:
@@ -329,9 +322,19 @@ def make_app() -> Flask:
         phone = normalize_phone(request.form.get("phone", ""))
         code = (request.form.get("code", "") or "").strip()
     
-        if not is_valid_phone(phone) or not re.fullmatch(r"\d{6}", code):
-            flash("Invalid phone number or code.", "danger")
+        # Validate: 4-digit code (matches your verify.html and backend)
+        if not is_valid_phone(phone):
+            flash("Please enter a valid mobile number.", "danger")
             return redirect(url_for("login"))
+    
+        if not re.fullmatch(r"\d{4}", code):
+            flash("Please enter the 4-digit code.", "danger")
+            return render_template(
+                "verify.html",
+                phone=phone,
+                active_page="login",
+                current_year=datetime.now().year,
+            )
     
         subs_base = os.getenv("SUBSCRIPTIONS_BACKEND_URL", "").rstrip("/")
         subs_key = os.getenv("SUBSCRIPTIONS_API_KEY", "")
@@ -350,38 +353,40 @@ def make_app() -> Flask:
             data = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
         except Exception as e:
             app.logger.exception("verify_code: subscription-backend call failed")
-            flash(f"Could not reach verification service. Please try again. ({e})", "danger")
-            return redirect(url_for("login"))
+            flash("Could not reach verification service. Please try again.", "danger")
+            return render_template(
+                "verify.html",
+                phone=phone,
+                active_page="login",
+                current_year=datetime.now().year,
+            )
     
         if r.status_code != 200 or not data.get("ok"):
             err = data.get("error") or f"HTTP {r.status_code}"
             flash(f"Verification failed: {err}", "danger")
-            return redirect(url_for("login"))
+            # Keep user on the verify page so they can retry
+            return render_template(
+                "verify.html",
+                phone=phone,
+                active_page="login",
+                current_year=datetime.now().year,
+            )
     
-        action = data.get("action") or ""
+        action = (data.get("action") or "").strip().lower()
         status = data.get("status") or ""
         token = data.get("token") or ""
         phone_e164 = data.get("phone_e164") or phone
     
-        # If user chose hard delete, we're done.
         if action == "hard_delete":
             flash("Account deleted.", "success")
             return redirect(url_for("login"))
     
-        # Mark session as verified (optional, useful for showing a “logged in” state)
         session["user_phone"] = phone_e164
     
-        # If you have a preferences page on wellcom-site, send them there.
-        # Otherwise, simplest is to send them to subscription-backend /manage?token=...
-        manage_url = None
         if token:
-            manage_url = f"{subs_base}/manage?token={token}"
+            return redirect(f"{subs_base}/manage?token={token}")
     
-        if manage_url:
-            flash(f"Verified. Status is now {status}.", "success")
-            return redirect(manage_url)
-    
-        flash("Verified.", "success")
+        flash(f"Verified. Status is now {status}.", "success")
         return redirect(url_for("home"))
 
     # Friendly endpoints for templates
