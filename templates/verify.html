@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-7 col-xl-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 fw-semibold mb-2">Enter verification code</h2>
+          <p class="text-muted mb-4">
+            We sent a code to <strong>{{ phone }}</strong>. Enter it below to continue.
+          </p>
+
+          <form method="post" action="{{ url_for('verify_code') }}">
+            <input type="hidden" name="phone" value="{{ phone }}">
+
+            <div class="mb-3">
+              <label for="code" class="form-label">4-digit code</label>
+              <input id="code" name="code" class="form-control"
+                     inputmode="numeric" pattern="\d{4}" maxlength="4"
+                     autocomplete="one-time-code" required>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Verify</button>
+            <a class="btn btn-link" href="{{ url_for('login') }}">Start over</a>
+          </form>
+
+          <hr class="my-4">
+
+          <div class="small text-muted">
+            Msg & data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
+            See <a href="{{ url_for('consent') }}">SMS Consent</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
