@@ -257,16 +257,22 @@ def make_app() -> Flask:
     @app.post("/login/send-code")
     def send_code_route():
         phone = normalize_phone(request.form.get("phone", ""))
+        name = (request.form.get("name") or "").strip()
+        action = (request.form.get("action") or "opt_in").strip().lower()
         consent_ok = request.form.get("consent") == "yes"
-
+    
+        if action not in ("opt_in", "opt_out", "hard_delete"):
+            flash("Please choose a valid action.", "danger")
+            return redirect(url_for("login"))
+    
         if not is_valid_phone(phone):
             flash("Please enter a valid mobile number in international format (e.g. +13125550123).", "danger")
             return redirect(url_for("login"))
-
+    
         if not consent_ok:
             flash("Consent is required to send a verification code.", "danger")
             return redirect(url_for("login"))
-
+    
         # Human check (Turnstile)
         site_key = os.getenv("TURNSTILE_SITE_KEY", "")
         secret_key = os.getenv("TURNSTILE_SECRET_KEY", "")
@@ -278,7 +284,7 @@ def make_app() -> Flask:
                 return redirect(url_for("login"))
         else:
             flash("Human check not configured yet; enable Turnstile in Config Vars for production.", "warning")
-
+    
         # rate limits (per phone and per IP)
         if not rl.allow(f"ip:{request.remote_addr}", limit=5, window_seconds=15 * 60):
             flash("Too many attempts from this network. Please try again later.", "danger")
@@ -286,57 +292,96 @@ def make_app() -> Flask:
         if not rl.allow(f"phone:{phone}", limit=3, window_seconds=15 * 60):
             flash("Too many codes sent to this number. Please try again later.", "danger")
             return redirect(url_for("login"))
-
-        # generate code
-        import secrets
-        code = f"{secrets.randbelow(1_000_000):06d}"
-        secret = os.getenv("CODE_HASH_SECRET", "dev-secret-change-me")
-        code_hash = hash_code(secret, phone, code)
-        codes.put(phone, code_hash, ttl_seconds=10 * 60)
-
-        # A2P-friendly message: short, informational, includes HELP/STOP and rates disclosure.
-        body = (
-            f"WellCom verification code: {code}. Expires in 10 min. "
-            "Reply STOP to opt out, HELP for help. Message and data rates may apply."
-        )
-        sent = send_sms(phone, body)
-
-        if sent:
-            flash("Verification code sent. Please enter it below.", "success")
-        else:
-            flash("SMS not sent (Twilio not configured yet). For testing, check server logs for the code.", "warning")
-            app.logger.warning("DEV code for %s is %s", phone, code)
-
-        return redirect(url_for("login"))
+    
+        # ---- NEW: delegate code generation + SMS to subscription-backend ----
+        subs_base = os.getenv("SUBSCRIPTIONS_BACKEND_URL", "").rstrip("/")
+        subs_key = os.getenv("SUBSCRIPTIONS_API_KEY", "")
+        if not subs_base or not subs_key:
+            flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
+            return redirect(url_for("login"))
+    
+        try:
+            import requests
+            r = requests.post(
+                f"{subs_base}/api/v1/auth/send_code",
+                headers={"X-Api-Key": subs_key},
+                json={"phone": phone, "name": name, "action": action},
+                timeout=15,
+            )
+            data = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+        except Exception as e:
+            app.logger.exception("send_code: subscription-backend call failed")
+            flash(f"Could not reach verification service. Please try again. ({e})", "danger")
+            return redirect(url_for("login"))
+    
+        if r.status_code != 200 or not data.get("ok"):
+            err = data.get("error") or f"HTTP {r.status_code}"
+            flash(f"Could not send verification code: {err}", "danger")
+            return redirect(url_for("login"))
+    
+        # Success: show verify page
+        phone_e164 = data.get("phone_e164") or phone
+        flash("Verification code sent. Please enter it below.", "success")
+        return render_template("verify.html", phone=phone_e164, active_page="login", current_year=datetime.now().year)
 
     @app.post("/login/verify")
     def verify_code_route():
         phone = normalize_phone(request.form.get("phone", ""))
         code = (request.form.get("code", "") or "").strip()
-
+    
         if not is_valid_phone(phone) or not re.fullmatch(r"\d{6}", code):
             flash("Invalid phone number or code.", "danger")
             return redirect(url_for("login"))
-
-        rec = codes.get(phone)
-        if not rec:
-            flash("No active code found (it may have expired). Please request a new code.", "danger")
+    
+        subs_base = os.getenv("SUBSCRIPTIONS_BACKEND_URL", "").rstrip("/")
+        subs_key = os.getenv("SUBSCRIPTIONS_API_KEY", "")
+        if not subs_base or not subs_key:
+            flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
             return redirect(url_for("login"))
-
-        if int(time.time()) > rec.expires_at:
-            codes.delete(phone)
-            flash("That code expired. Please request a new code.", "danger")
+    
+        try:
+            import requests
+            r = requests.post(
+                f"{subs_base}/api/v1/auth/verify_code",
+                headers={"X-Api-Key": subs_key},
+                json={"phone": phone, "code": code},
+                timeout=15,
+            )
+            data = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+        except Exception as e:
+            app.logger.exception("verify_code: subscription-backend call failed")
+            flash(f"Could not reach verification service. Please try again. ({e})", "danger")
             return redirect(url_for("login"))
-
-        secret = os.getenv("CODE_HASH_SECRET", "dev-secret-change-me")
-        expected = hash_code(secret, phone, code)
-        if not hmac.compare_digest(expected, rec.code_hash):
-            flash("Incorrect code.", "danger")
+    
+        if r.status_code != 200 or not data.get("ok"):
+            err = data.get("error") or f"HTTP {r.status_code}"
+            flash(f"Verification failed: {err}", "danger")
             return redirect(url_for("login"))
-
-        codes.delete(phone)
-        session["user_phone"] = phone
-        flash("Verified. (Next: preferences page)", "success")
+    
+        action = data.get("action") or ""
+        status = data.get("status") or ""
+        token = data.get("token") or ""
+        phone_e164 = data.get("phone_e164") or phone
+    
+        # If user chose hard delete, we're done.
+        if action == "hard_delete":
+            flash("Account deleted.", "success")
+            return redirect(url_for("login"))
+    
+        # Mark session as verified (optional, useful for showing a “logged in” state)
+        session["user_phone"] = phone_e164
+    
+        # If you have a preferences page on wellcom-site, send them there.
+        # Otherwise, simplest is to send them to subscription-backend /manage?token=...
+        manage_url = None
+        if token:
+            manage_url = f"{subs_base}/manage?token={token}"
+    
+        if manage_url:
+            flash(f"Verified. Status is now {status}.", "success")
+            return redirect(manage_url)
+    
+        flash("Verified.", "success")
         return redirect(url_for("home"))
 
     # Friendly endpoints for templates
