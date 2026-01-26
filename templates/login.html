@@ -4,19 +4,48 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   {% endif %}
 {% endblock %}
+
 {% block content %}
   <div class="row g-4">
     <div class="col-12 col-lg-7">
       <div class="card shadow-sm">
         <div class="card-body p-4">
-          <h2 class="h4 fw-semibold mb-2">Login</h2>
-          <p class="text-muted mb-4">Enter your mobile number. We'll text you a one-time verification code.</p>
+          <h2 class="h4 fw-semibold mb-2">Login / Preferences</h2>
+          <p class="text-muted mb-4">
+            Enter your phone number and choose what you want to do. We'll text you a one-time verification code.
+          </p>
 
-          <form method="post" action="{{ url_for('send_code') }}" class="mb-3">
+          <form method="post" action="{{ url_for('send_code') }}" class="mb-2">
             <div class="mb-3">
               <label for="phone" class="form-label">Mobile number</label>
-              <input id="phone" name="phone" class="form-control" placeholder="+1 312 555 0123" autocomplete="tel" required>
+              <input id="phone" name="phone" class="form-control"
+                     placeholder="+1 312 555 0123" autocomplete="tel" required>
               <div class="form-text">Use international format (E.164), e.g. +13125550123.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="name" class="form-label">First name (required for first-time opt-in)</label>
+              <input id="name" name="name" class="form-control"
+                     placeholder="Howard" autocomplete="given-name">
+              <div class="form-text">
+                If this number is already in the system and you enter a name here, the new name will replace the old one.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-label mb-2">Action</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="action" id="actIn" value="opt_in" checked>
+                <label class="form-check-label" for="actIn">Opt in (enable messages)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="action" id="actOut" value="opt_out">
+                <label class="form-check-label" for="actOut">Opt out (disable messages)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="action" id="actDel" value="hard_delete">
+                <label class="form-check-label" for="actDel">Hard delete (permanently remove account)</label>
+              </div>
             </div>
 
             <div class="form-check mb-3">
@@ -44,20 +73,9 @@
             <button class="btn btn-primary" type="submit">Send verification code</button>
           </form>
 
-          <hr class="my-4">
-
-          <form method="post" action="{{ url_for('verify_code') }}">
-            <div class="mb-3">
-              <label for="vphone" class="form-label">Mobile number</label>
-              <input id="vphone" name="phone" class="form-control" placeholder="+13125550123" autocomplete="tel" required>
-            </div>
-            <div class="mb-3">
-              <label for="code" class="form-label">Verification code</label>
-              <input id="code" name="code" class="form-control" inputmode="numeric" autocomplete="one-time-code" required>
-            </div>
-            <button class="btn btn-outline-primary" type="submit">Verify & continue</button>
-          </form>
-
+          <div class="small text-muted mt-3">
+            We will send a new verification code each time you submit this form.
+          </div>
         </div>
       </div>
     </div>
@@ -73,7 +91,7 @@
             <li>Basic rate limiting & code expiry</li>
           </ul>
           <div class="small text-muted mt-3">
-            This page is designed to support relationship-based, informational messaging (not marketing).
+            This page supports relationship-based, informational messaging (not marketing).
           </div>
         </div>
       </div>
