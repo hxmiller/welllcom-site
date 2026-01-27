@@ -30,10 +30,30 @@ E164_RE = re.compile(r"^\+[1-9]\d{7,14}$")
 
 
 def normalize_phone(raw: str) -> str:
-    raw = (raw or "").strip().replace(" ", "").replace("(", "").replace(")", "").replace("-", "")
-    if raw.startswith("00"):
-        raw = "+" + raw[2:]
-    return raw
+    s = (raw or "").strip()
+
+    # Convert leading 00… to +… (international style)
+    if s.startswith("00"):
+        s = "+" + s[2:]
+
+    # If it already has a +, keep the plus and strip everything else non-digit
+    if s.startswith("+"):
+        digits = re.sub(r"\D", "", s[1:])
+        return "+" + digits
+
+    # Otherwise, strip all non-digits
+    digits = re.sub(r"\D", "", s)
+
+    # US-friendly rules:
+    # - 10 digits => assume US, prefix +1
+    # - 11 digits starting with 1 => prefix +
+    if len(digits) == 10:
+        return "+1" + digits
+    if len(digits) == 11 and digits.startswith("1"):
+        return "+" + digits
+
+    # Fallback: return digits as-is (will fail validation if not E.164)
+    return digits
 
 
 def is_valid_phone(e164: str) -> bool:
