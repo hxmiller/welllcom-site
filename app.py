@@ -374,20 +374,29 @@ def make_app() -> Flask:
     
         action = (data.get("action") or "").strip().lower()
         status = data.get("status") or ""
-        token = data.get("token") or ""
+        token = data.get("token") or ""   # token may exist, but we won't use it for UI anymore
         phone_e164 = data.get("phone_e164") or phone
-    
+        name = data.get("name") or ""
+
+        # If user chose hard delete, we're done.
         if action == "hard_delete":
             flash("Account deleted.", "success")
             return redirect(url_for("login"))
-    
+
+        # Mark session as verified (optional)
         session["user_phone"] = phone_e164
-    
-        if token:
-            return redirect(f"{subs_base}/manage?token={token}")
-    
-        flash(f"Verified. Status is now {status}.", "success")
-        return redirect(url_for("home"))
+
+        # Page 3: receipt (stay on wellcom-site)
+        return render_template(
+            "receipt.html",
+            title="WellCom – Preferences updated",
+            active_page="login",
+            phone=phone_e164,
+            name=name,
+            action=action,
+            status=status,
+            current_year=datetime.now().year,
+        )
 
     # Friendly endpoints for templates
     app.add_url_rule("/login/send-code", endpoint="send_code", view_func=send_code_route, methods=["POST"])
