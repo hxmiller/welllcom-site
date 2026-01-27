@@ -309,6 +309,37 @@ def make_app() -> Flask:
         # ---- NEW: delegate code generation + SMS to subscription-backend ----
         subs_base = os.getenv("SUBSCRIPTIONS_BACKEND_URL", "").rstrip("/")
         subs_key = os.getenv("SUBSCRIPTIONS_API_KEY", "")
+
+        # Ask subscription-backend whether this phone already exists
+        phone_exists = False
+        try:
+            r0 = requests.get(
+                f"{subs_base}/api/v1/subscriptions/{phone}",
+                headers={"X-Api-Key": subs_key},
+                timeout=10,
+            )
+            d0 = r0.json() if r0.headers.get("content-type","").startswith("application/json") else {}
+        
+            if r0.status_code == 200 and d0.get("ok"):
+                status0 = (d0.get("status") or "").strip().lower()
+                name0 = (d0.get("name") or "").strip()
+                if status0 in ("opt_in", "opt_out") or name0:
+                    phone_exists = True
+        
+        except Exception:
+            flash("Could not verify this phone number right now. Please try again.", "danger")
+            return redirect(url_for("login"))
+        
+        # Block deleting numbers that don't exist
+        if action == "hard_delete" and not phone_exists:
+            flash("That phone number is not in our system, so it can’t be permanently removed.", "danger")
+            return redirect(url_for("login"))
+        
+        # Require name for new numbers
+        if not phone_exists and not name:
+            flash("Name is required for a new phone number.", "danger")
+            return redirect(url_for("login"))
+
         if not subs_base or not subs_key:
             flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
             return redirect(url_for("login"))
