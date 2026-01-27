@@ -32,11 +32,13 @@
             <th class="text-muted">Current status</th>
             <td>
               {% if status == "opt_in" %}
-                <span class="badge bg-success">Enabled</span>
+                <span class="badge bg-success">Opt in</span>
               {% elif status == "opt_out" %}
-                <span class="badge bg-secondary">Disabled</span>
+                <span class="badge bg-secondary">Opt out</span>
+              {% elif status == "deleted" %}
+                <span class="badge bg-danger">Removed</span>
               {% else %}
-                <span class="badge bg-danger">Deleted</span>
+                <span class="badge bg-light text-dark">{{ status }}</span>
               {% endif %}
             </td>
           </tr>
