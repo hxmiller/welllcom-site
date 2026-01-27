@@ -306,30 +306,44 @@ def make_app() -> Flask:
             flash("Too many codes sent to this number. Please try again later.", "danger")
             return redirect(url_for("login"))
     
-        # ---- NEW: delegate code generation + SMS to subscription-backend ----
-        subs_base = os.getenv("SUBSCRIPTIONS_BACKEND_URL", "").rstrip("/")
-        subs_key = os.getenv("SUBSCRIPTIONS_API_KEY", "")
-
-        # Ask subscription-backend whether this phone already exists
-        phone_exists = False
-        try:
-            r0 = requests.get(
-                f"{subs_base}/api/v1/subscriptions/{phone}",
-                headers={"X-Api-Key": subs_key},
-                timeout=10,
-            )
-            d0 = r0.json() if r0.headers.get("content-type","").startswith("application/json") else {}
+        # ---- subscription-backend config ----
+        subs_base = (os.getenv("SUBSCRIPTIONS_BACKEND_URL") or "").rstrip("/")
+        subs_key = os.getenv("SUBSCRIPTIONS_API_KEY") or ""
         
-            if r0.status_code == 200 and d0.get("ok"):
-                status0 = (d0.get("status") or "").strip().lower()
-                name0 = (d0.get("name") or "").strip()
-                if status0 in ("opt_in", "opt_out") or name0:
-                    phone_exists = True
-        
-        except Exception:
-            flash("Could not verify this phone number right now. Please try again.", "danger")
+        if not subs_base or not subs_key:
+            flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
             return redirect(url_for("login"))
         
+        if not requests:
+            flash("Server missing dependency: requests. Please redeploy with requests installed.", "danger")
+            return redirect(url_for("login"))
+        
+        # ---- check whether this phone already exists (for name rules + hard delete rules) ----
+        phone_exists = False
+        try:
+            # IMPORTANT: phone is E.164 like +1847..., so urlencode the '+' to avoid routing issues
+            phone_url = requests.utils.quote(phone, safe="")
+            r0 = requests.get(
+                f"{subs_base}/api/v1/subscriptions/{phone_url}",
+                headers={"X-Api-Key": subs_key},
+                timeout=20,
+            )
+        
+            d0 = r0.json() if (r0.headers.get("content-type") or "").startswith("application/json") else {}
+        
+            # subscription-backend returns: {"ok":true, "subscription": {...}}
+            sub = d0.get("subscription") or {}
+        
+            # Heuristic: treat as "exists" if we got a subscription object back
+            # (phone_number is the strongest indicator)
+            if r0.status_code == 200 and d0.get("ok") and sub.get("phone_number"):
+                phone_exists = True
+        
+        except Exception as e:
+            app.logger.exception("phone_exists lookup failed")
+            flash("Could not verify this phone number right now. Please try again.", "danger")
+            return redirect(url_for("login"))
+
         # Block deleting numbers that don't exist
         if action == "hard_delete" and not phone_exists:
             flash("That phone number is not in our system, so it can’t be permanently removed.", "danger")
@@ -345,7 +359,6 @@ def make_app() -> Flask:
             return redirect(url_for("login"))
     
         try:
-            import requests
             r = requests.post(
                 f"{subs_base}/api/v1/auth/send_code",
                 headers={"X-Api-Key": subs_key},
@@ -394,7 +407,6 @@ def make_app() -> Flask:
             return redirect(url_for("login"))
     
         try:
-            import requests
             r = requests.post(
                 f"{subs_base}/api/v1/auth/verify_code",
                 headers={"X-Api-Key": subs_key},
