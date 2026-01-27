@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-7 col-xl-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+
+        <h2 class="h4 fw-semibold mb-3">Preferences Updated</h2>
+
+        <p class="text-muted mb-4">
+          Your WellCom SMS preferences have been successfully updated.
+          This page is your confirmation receipt.
+        </p>
+
+        <table class="table table-sm mb-4">
+          <tr>
+            <th class="text-muted">Phone</th>
+            <td>{{ phone }}</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Name</th>
+            <td>{{ name or "—" }}</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Requested action</th>
+            <td>
+              {% if action == "opt_in" %}Opt in{% elif action == "opt_out" %}Opt out{% else %}Hard delete{% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th class="text-muted">Current status</th>
+            <td>
+              {% if status == "opt_in" %}
+                <span class="badge bg-success">Enabled</span>
+              {% elif status == "opt_out" %}
+                <span class="badge bg-secondary">Disabled</span>
+              {% else %}
+                <span class="badge bg-danger">Deleted</span>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary" onclick="window.print()">
+            Print
+          </button>
+          <a href="{{ url_for('login') }}" class="btn btn-primary">
+            Done
+          </a>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="small text-muted">
+          Msg & data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
+          See <a href="{{ url_for('consent') }}">SMS Consent</a>.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
