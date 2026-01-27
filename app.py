@@ -273,6 +273,7 @@ def make_app() -> Flask:
         name = (request.form.get("name") or "").strip()
         action = (request.form.get("action") or "opt_in").strip().lower()
         consent_ok = request.form.get("consent") == "yes"
+        session["pending_name"] = name
     
         if action not in ("opt_in", "opt_out", "hard_delete"):
             flash("Please choose a valid action.", "danger")
@@ -436,20 +437,44 @@ def make_app() -> Flask:
             )
     
         action = (data.get("action") or "").strip().lower()
-        status = data.get("status") or ""
-        token = data.get("token") or ""   # token may exist, but we won't use it for UI anymore
+        status = (data.get("status") or "").strip().lower()
         phone_e164 = data.get("phone_e164") or phone
-        name = data.get("name") or ""
-
-        # If user chose hard delete, we're done.
+        
+        # If user chose hard delete, show a receipt page (not just a flash)
         if action == "hard_delete":
-            flash("Account deleted.", "success")
-            return redirect(url_for("login"))
-
-        # Mark session as verified (optional)
+            # Try to show the name from session (best effort)
+            deleted_name = session.pop("pending_name", "") or ""
+            return render_template(
+                "receipt.html",
+                title="WellCom – Preferences updated",
+                active_page="login",
+                phone=phone_e164,
+                name=deleted_name,
+                action=action,
+                status="deleted",
+                current_year=datetime.now().year,
+            )
+        
+        # For opt_in / opt_out, fetch the saved record so receipt is accurate
+        name = ""
+        try:
+            r2 = requests.get(
+                f"{subs_base}/api/v1/subscriptions/{phone_e164}",
+                headers={"X-Api-Key": subs_key},
+                timeout=10,
+            )
+            d2 = r2.json() if r2.headers.get("content-type", "").startswith("application/json") else {}
+            if r2.status_code == 200 and d2.get("ok"):
+                sub = d2.get("subscription") or {}
+                # backend uses contact_name in the response you showed
+                name = (sub.get("contact_name") or "").strip()
+                # status from source-of-truth record (optional)
+                status = (sub.get("status") or status).strip().lower()
+        except Exception:
+            pass
+        
         session["user_phone"] = phone_e164
-
-        # Page 3: receipt (stay on wellcom-site)
+        
         return render_template(
             "receipt.html",
             title="WellCom – Preferences updated",
