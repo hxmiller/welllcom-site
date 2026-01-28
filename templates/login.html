@@ -63,6 +63,9 @@
             {% if turnstile_site_key %}
               <div class="mb-3">
                 <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
+                <div class="form-text text-muted mt-1">
+                  Spam and abuse protection by Cloudflare, confirming you are human.
+                </div>
               </div>
             {% else %}
               <div class="alert alert-warning small mb-3">
