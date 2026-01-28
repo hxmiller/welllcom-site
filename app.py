@@ -393,7 +393,7 @@ def make_app() -> Flask:
             flash("Please enter a valid mobile number.", "danger")
             return redirect(url_for("login"))
     
-        if not re.fullmatch(r"\d{4}", code):
+        if not re.fullmatch(r"\d{6}", code):
             flash("Please enter the 4-digit code.", "danger")
             return render_template(
                 "verify.html",
