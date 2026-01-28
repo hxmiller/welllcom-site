@@ -273,7 +273,6 @@ def make_app() -> Flask:
         name = (request.form.get("name") or "").strip()
         action = (request.form.get("action") or "opt_in").strip().lower()
         consent_ok = request.form.get("consent") == "yes"
-        session["pending_name"] = name
     
         if action not in ("opt_in", "opt_out", "hard_delete"):
             flash("Please choose a valid action.", "danger")
@@ -354,6 +353,8 @@ def make_app() -> Flask:
         if not phone_exists and not name:
             flash("Name is required for a new phone number.", "danger")
             return redirect(url_for("login"))
+
+        session["pending_name"] = name
 
         if not subs_base or not subs_key:
             flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
