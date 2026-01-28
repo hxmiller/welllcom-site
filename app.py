@@ -320,9 +320,12 @@ def make_app() -> Flask:
         
         # ---- check whether this phone already exists (for name rules + hard delete rules) ----
         phone_exists = False
+        existing_contact_name = ""
+        
         try:
             # IMPORTANT: phone is E.164 like +1847..., so urlencode the '+' to avoid routing issues
             phone_url = requests.utils.quote(phone, safe="")
+        
             r0 = requests.get(
                 f"{subs_base}/api/v1/subscriptions/{phone_url}",
                 headers={"X-Api-Key": subs_key},
@@ -331,15 +334,15 @@ def make_app() -> Flask:
         
             d0 = r0.json() if (r0.headers.get("content-type") or "").startswith("application/json") else {}
         
-            # subscription-backend returns: {"ok":true, "subscription": {...}}
+            # subscription-backend returns: {"ok": true, "subscription": {...}}
             sub = d0.get("subscription") or {}
         
-            # Heuristic: treat as "exists" if we got a subscription object back
-            # (phone_number is the strongest indicator)
+            # "exists" if we got a subscription object with a phone_number
             if r0.status_code == 200 and d0.get("ok") and sub.get("phone_number"):
                 phone_exists = True
+                existing_contact_name = (sub.get("contact_name") or "").strip()
         
-        except Exception as e:
+        except Exception:
             app.logger.exception("phone_exists lookup failed")
             flash("Could not verify this phone number right now. Please try again.", "danger")
             return redirect(url_for("login"))
@@ -354,8 +357,13 @@ def make_app() -> Flask:
             flash("Name is required for a new phone number.", "danger")
             return redirect(url_for("login"))
 
-        session["pending_name"] = name
-
+        # Save name for the delete receipt. If user is deleting and didn't type a name,
+        # keep the existing name (so the receipt doesn't show "—").
+        if action == "hard_delete" and not name and existing_contact_name:
+            session["pending_name"] = existing_contact_name
+        else:
+            session["pending_name"] = name
+            
         if not subs_base or not subs_key:
             flash("Server not configured (missing SUBSCRIPTIONS_BACKEND_URL or SUBSCRIPTIONS_API_KEY).", "danger")
             return redirect(url_for("login"))
@@ -468,7 +476,7 @@ def make_app() -> Flask:
             if r2.status_code == 200 and d2.get("ok"):
                 sub = d2.get("subscription") or {}
                 # backend uses contact_name in the response you showed
-                name = (sub.get("contact_name") or "").strip()
+                name = (sub.get("contact_name") or sub.get("name") or "").strip()
                 # status from source-of-truth record (optional)
                 status = (sub.get("status") or status).strip().lower()
         except Exception:
