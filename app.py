@@ -394,7 +394,7 @@ def make_app() -> Flask:
             return redirect(url_for("login"))
     
         if not re.fullmatch(r"\d{6}", code):
-            flash("Please enter the 4-digit code.", "danger")
+            flash("Please enter the 6-digit verification code.", "danger")
             return render_template(
                 "verify.html",
                 phone=phone,
