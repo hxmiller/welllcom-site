@@ -19,7 +19,7 @@
           </ul>
         {% endif %}
         
-        {% if active_page == "consent" %}
+        {% if (active_page|default('')) == "consent" %}
           <div class="small text-muted mt-3">
             By opting in, you agree to our
             <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
