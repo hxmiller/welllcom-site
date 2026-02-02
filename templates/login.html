@@ -48,17 +48,16 @@
               </div>
             </div>
 
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" value="yes" id="consentCheck" name="consent" required>
-              <label class="form-check-label" for="consentCheck">
-                I confirm I am the owner (or authorized user) of this number and consent to receive account-related SMS from WellCom.
-              </label>
-            </div>
-
             <div class="small text-muted mb-3">
-              Msg & data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
+              By opting in, you agree to our
+              <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
+              and
+              <a href="{{ url_for('privacy') }}">Privacy Policy</a>.
+              Msg &amp; data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help.
               See <a href="{{ url_for('consent') }}">SMS Consent</a>.
             </div>
+                        
+            
 
             {% if turnstile_site_key %}
               <div class="mb-3">
