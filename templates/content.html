@@ -18,6 +18,20 @@
             {% endfor %}
           </ul>
         {% endif %}
+        
+        {% if active_page == "consent" %}
+          <div class="small text-muted mt-3">
+            By opting in, you agree to our
+            <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
+            and
+            <a href="{{ url_for('privacy') }}">Privacy Policy</a>.
+            Msg &amp; data rates may apply. Reply <strong>STOP</strong> to opt out,
+            <strong>HELP</strong> for help.
+          </div>
+        {% endif %}
+        
+        {% if footer %}
+
 
         {% if footer %}
           <div class="mt-4 wc-footer-notes">
